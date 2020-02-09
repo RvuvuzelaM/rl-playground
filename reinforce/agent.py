@@ -14,7 +14,7 @@ class ReinforceAgent:
     self.log_probs = []
     self.rewards = []
  
-    self.policy = PlaceholderNet(lr=lr, n_inputs=n_inputs, n_hidden_1=128, n_hidden_2=128, n_outs=n_actions)
+    self.policy = PlaceholderNet(lr=lr, n_inputs=n_inputs, n_hidden_1=256, n_hidden_2=256, n_outs=n_actions)
      
   def choose_action(self, obs):
     probs = F.softmax(self.policy.forward(obs), dim=-1)
