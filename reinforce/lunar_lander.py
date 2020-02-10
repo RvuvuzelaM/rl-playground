@@ -28,9 +28,9 @@ def play(n_games, lr):
   
   env.close()
 
-  plot_and_save_scores(scores, episodes)
+  plot_and_save_scores(scores, episodes, lr)
 
-def plot_and_save_scores(scores, episodes):
+def plot_and_save_scores(scores, episodes, lr):
   plt.plot(np.arange(episodes), scores, linestyle=':')
   plt.title('n_games=' + str(episodes) + ',lr=' + str(lr))
   plt.xlabel('episode')
