@@ -36,8 +36,6 @@ class A2CAgent:
     actor_loss  = -(log_probs * advantage.detach()).mean()
     critic_loss = advantage.pow(2).mean()
 
-    print(actor_loss, critic_loss, self.entropy)
-
     loss = actor_loss + 0.5 * critic_loss - 0.001 * self.entropy
 
     self.actor_critic.optimizer.zero_grad()
