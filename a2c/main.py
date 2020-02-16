@@ -1,5 +1,6 @@
 import argparse
 import gym
+import os
 import time
 import numpy as np
 import matplotlib.pyplot as plt
@@ -18,17 +19,30 @@ def test(env, agent):
     total_reward = 0
     while not done:
         dist, _ = agent.step(state)
-        state, reward, done, _ = env.step(dist.sample().cpu().numpy())
+        state, reward, done, _ = env.step(dist.sample().cpu().numpy()[0])
         total_reward += reward
     return total_reward
 
 def plot_and_save_scores(scores, frames, args):
-  plt.plot(np.arange(frames), scores)
-  plt.title(args)
-  plt.xlabel('frames')
-  plt.ylabel('reward')
-  filename = '../results/a2c/lunar_lander' + str(time.time()) + '.png'
-  plt.savefig(filename)
+    plt.plot(np.arange(frames), scores)
+    
+    plt.title('Actor Critic')
+    plt.xlabel('frames')
+    plt.ylabel('reward')
+
+    DIR_PATH = '../results/a2c/lunar_lander' + str(time.time())
+    os.mkdir(DIR_PATH)
+
+    hyperparams_path = DIR_PATH + '/hyperparameters.txt'
+    os.mknod(hyperparams_path)
+
+    f = open(hyperparams_path, 'w+')
+    for k, v in vars(args).items():
+        f.write(str(k) + ' ' + str(v) + '\n')
+    f.close()
+
+    plot_path = DIR_PATH + '/plot.png'
+    plt.savefig(plot_path)
 
 
 if __name__ == "__main__":
@@ -75,11 +89,11 @@ if __name__ == "__main__":
             state = next_state
             idx += 1
 
-            if idx % 1000 == 0 and idx > 0:
-                score = test(env, agent)
+            if idx % 1000 == 0:
+                score = np.mean([agent.test_env(env) for _ in range(10)])
                 print(idx, score)
                 scores.append(score)
 
         agent.train(next_state)
 
-    plot_and_save_scores(scores, args.max_frames, args)
+    plot_and_save_scores(scores, args.max_frames/1000, args)
