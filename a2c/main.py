@@ -13,19 +13,9 @@ def make_env(env_name):
         return env
     return _thunk
 
-def test(env, agent):
-    state = env.reset()
-    done = False
-    total_reward = 0
-    while not done:
-        dist, _ = agent.step(state)
-        state, reward, done, _ = env.step(dist.sample().cpu().numpy()[0])
-        total_reward += reward
-    return total_reward
-
 def plot_and_save_scores(scores, frames, args):
     plt.plot(np.arange(frames), scores)
-    
+
     plt.title('Actor Critic')
     plt.xlabel('frames')
     plt.ylabel('reward')
@@ -90,7 +80,7 @@ if __name__ == "__main__":
             idx += 1
 
             if idx % 1000 == 0:
-                score = np.mean([agent.test_env(env) for _ in range(10)])
+                score = np.mean([agent.test_env(env) for _ in range(100)])
                 print(idx, score)
                 scores.append(score)
 
